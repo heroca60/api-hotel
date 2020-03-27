@@ -1,6 +1,5 @@
-import { DefaultTransactionalRepository } from '@loopback/repository';
+import { DefaultTransactionalRepository, juggler } from '@loopback/repository';
 import { Inventario, InventarioRelations } from '../models';
-import { MysqlDataSource } from '../datasources';
 import { inject } from '@loopback/core';
 
 export class InventarioRepository extends DefaultTransactionalRepository<
@@ -9,8 +8,8 @@ export class InventarioRepository extends DefaultTransactionalRepository<
   InventarioRelations
   > {
   constructor(
-    @inject('datasources.mysql') dataSource: MysqlDataSource,
+    @inject('datasources.mysql') protected db: juggler.DataSource,
   ) {
-    super(Inventario, dataSource);
+    super(Inventario, db);
   }
 }

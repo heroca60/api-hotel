@@ -38,4 +38,27 @@ export class ViewdetalleController {
     return this.viewdetalleRepository.dataSource.execute('Select * from viewdetalle where idcompra=' + idcompra);
   }
   /********************************/
+  /********************************/
+  @get('/viewdetalles', {
+    responses: {
+      '200': {
+        description: 'Array of detalles de compra model instances',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array',
+              items: getModelSchemaRef(Viewdetalle, { includeRelations: true }),
+            },
+          },
+        },
+      },
+    },
+  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async test1(
+  ): Promise<Viewdetalle[]> {
+    return this.viewdetalleRepository.dataSource.execute('Select * from viewdetalle');
+  }
+  /********************************/
+
 }

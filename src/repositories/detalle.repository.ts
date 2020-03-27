@@ -1,16 +1,15 @@
-import {DefaultCrudRepository} from '@loopback/repository';
-import {Detalle, DetalleRelations} from '../models';
-import {MysqlDataSource} from '../datasources';
-import {inject} from '@loopback/core';
+import { DefaultTransactionalRepository, juggler } from '@loopback/repository';
+import { Detalle, DetalleRelations } from '../models';
+import { inject } from '@loopback/core';
 
-export class DetalleRepository extends DefaultCrudRepository<
+export class DetalleRepository extends DefaultTransactionalRepository<
   Detalle,
   typeof Detalle.prototype.iddetalle,
   DetalleRelations
-> {
+  > {
   constructor(
-    @inject('datasources.mysql') dataSource: MysqlDataSource,
+    @inject('datasources.mysql') protected db: juggler.DataSource,
   ) {
-    super(Detalle, dataSource);
+    super(Detalle, db);
   }
 }

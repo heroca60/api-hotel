@@ -18,7 +18,7 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import { Inventario, Detalle } from '../models';
+import { Inventario } from '../models';
 import { InventarioRepository, DetalleRepository } from '../repositories';
 
 export class InventarioController {
@@ -54,22 +54,33 @@ export class InventarioController {
     inventario: Omit<Inventario, 'idinventario'>,
   ): Promise<boolean> {
     let res = false;
-    const tx = this.inventarioRepository.beginTransaction(IsolationLevel.READ_COMMITTED);
+    let i: number;
+    const tx = await this.inventarioRepository.beginTransaction({
+      isolationLevel: IsolationLevel.READ_COMMITTED,
+      timeout: 30000 //30 seg.
+    });
     try {
-      for (let i = 0; i <= cantidad; i++) {
-        //Se crean todos los inventarios tomados de los detalles de compra
-        await this.inventarioRepository.create(inventario, { transaction: tx })
-        //Se actualiza el detalle, se pasa de inventariadodetalle = 0 a 1
-        // 0 = no inventariado y 1 = inventariado
-        await this.detalleRepository.updateById(inventario.iddetalle, { inventariadodetalle: 1 }, { transaction: tx })
+      i = 1;
+      while (i < (cantidad + 1)) {
+        console.log(i)
+        console.log(await this.inventarioRepository.create(
+          inventario, { transaction: tx }));
+        i++;
       }
-      await (await tx).commit();
+      //Se actualiza el detalle, se pasa de inventariadodetalle = 0 a 1
+      // 0 = no inventariado y 1 = inventariado
+      await this.detalleRepository.updateById(inventario.iddetalle, { inventariadodetalle: 1 }, { transaction: tx })
+      await tx.commit();
       res = true;
-    } catch (e) {
-      await (await tx).rollback();
+    } catch (error) {
+      await tx.rollback();
       res = false;
     }
     return res;
+  }
+
+  async tran(inventario: Inventario, n: number) {
+
   }
 
   @get('/inventarios/count', {
