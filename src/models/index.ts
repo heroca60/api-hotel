@@ -13,3 +13,5 @@ export * from './viewdetalle.model';
 export * from './viewhabitacion.model';
 export * from './inventario.model';
 export * from './viewinventario.model';
+export * from './habitacioninventario.model';
+export * from './objetohabitacion.model';

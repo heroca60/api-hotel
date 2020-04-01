@@ -7,7 +7,7 @@ export * from './tipo.repository';
 export * from './habitacion.repository';
 export * from './servicio.repository';
 export * from './habitacionservicio.repository';
-
+export * from './habitacioninventario.repository';
 export * from './viewhabitacionservicio.repository';
 export * from './viewmodulo.repository';
 export * from './viewdetalle.repository';

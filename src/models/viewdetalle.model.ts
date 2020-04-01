@@ -29,6 +29,12 @@ export class Viewdetalle extends Entity {
   nombrearticulo: string;
 
   @property({
+    type: 'string',
+    required: true,
+  })
+  descripcionarticulo: string;
+
+  @property({
     type: 'number',
     required: true,
   })

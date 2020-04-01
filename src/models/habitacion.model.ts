@@ -1,4 +1,4 @@
-import {Entity, model, property} from '@loopback/repository';
+import { Entity, model, property } from '@loopback/repository';
 
 @model({
   settings: {
@@ -21,7 +21,7 @@ export class Habitacion extends Entity {
     required: true,
   })
   idmodulo: number;
-  
+
   @property({
     type: 'number',
     required: true,
@@ -34,13 +34,12 @@ export class Habitacion extends Entity {
     required: true,
   })
   preciohabitacion: number;
-  
+
   @property({
     type: 'number',
     required: true,
   })
   estadohabitacion: number;
-
 
   constructor(data?: Partial<Habitacion>) {
     super(data);

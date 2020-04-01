@@ -4,6 +4,7 @@ import {
   Filter,
   repository,
   Where,
+  IsolationLevel,
 } from '@loopback/repository';
 import {
   post,
@@ -17,20 +18,28 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import {Habitacion} from '../models';
-import {HabitacionRepository} from '../repositories';
+import { Habitacion, Servicio, Inventario, Objetohabitacion } from '../models';
+import {
+  HabitacionRepository,
+  HabitacionservicioRepository,
+  HabitacioninventarioRepository
+} from '../repositories';
 
 export class HabitacionController {
   constructor(
     @repository(HabitacionRepository)
-    public habitacionRepository : HabitacionRepository,
-  ) {}
+    public habitacionRepository: HabitacionRepository,
+    @repository(HabitacionservicioRepository)
+    public habitacionservicioRepository: HabitacionservicioRepository,
+    @repository(HabitacioninventarioRepository)
+    public habitacioninventarioRepository: HabitacioninventarioRepository
+  ) { }
 
   @post('/habitaciones', {
     responses: {
       '200': {
         description: 'Habitacion model instance',
-        content: {'application/json': {schema: getModelSchemaRef(Habitacion)}},
+        content: { 'application/json': { schema: getModelSchemaRef(Objetohabitacion) } },
       },
     },
   })
@@ -38,23 +47,72 @@ export class HabitacionController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Habitacion, {
+          schema: getModelSchemaRef(Objetohabitacion, {
             title: 'NewHabitacion',
             exclude: ['idhabitacion'],
           }),
         },
       },
     })
-    habitacion: Omit<Habitacion, 'idhabitacion'>,
-  ): Promise<Habitacion> {
-    return this.habitacionRepository.create(habitacion);
+    objetohabitacion: Omit<Objetohabitacion, 'idhabitacion'>,
+  ): Promise<boolean> {
+    let res = false;
+    let i: number;
+    const servicios: Servicio[] = objetohabitacion.servicios;
+    const inventarios: Inventario[] = objetohabitacion.inventarios;
+
+    const tx = await this.habitacionRepository.beginTransaction({
+      isolationLevel: IsolationLevel.READ_COMMITTED,
+      timeout: 30000
+    });
+    try {
+      const tran = await this.habitacionRepository.create(
+        {
+          idmodulo: objetohabitacion.idmodulo,
+          idtipo: objetohabitacion.idtipo,
+          preciohabitacion: objetohabitacion.preciohabitacion,
+          estadohabitacion: objetohabitacion.estadohabitacion
+        },
+        { transaction: tx });
+
+      for (i = 0; i < servicios.length; i++) {
+        await this.habitacionservicioRepository.create(
+          {
+            idhabitacion: tran.idhabitacion,
+            idservicio: servicios[i].idservicio
+          },
+          {
+            transaction: tx
+          }
+        )
+      }
+
+      for (i = 0; i < inventarios.length; i++) {
+        await this.habitacioninventarioRepository.create(
+          {
+            idhabitacion: tran.idhabitacion,
+            idinventario: inventarios[i].idinventario
+          },
+          {
+            transaction: tx
+          }
+        )
+      }
+      await tx.commit();
+      res = true;
+    } catch (error) {
+      await tx.rollback();
+      res = false;
+    }
+
+    return res;
   }
 
   @get('/habitaciones/count', {
     responses: {
       '200': {
         description: 'Habitacion model count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -72,7 +130,11 @@ export class HabitacionController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(Habitacion, {includeRelations: true}),
+              items: getModelSchemaRef(
+                Habitacion,
+                {
+                  includeRelations: true,
+                }),
             },
           },
         },
@@ -89,7 +151,7 @@ export class HabitacionController {
     responses: {
       '200': {
         description: 'Habitacion PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -97,7 +159,7 @@ export class HabitacionController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Habitacion, {partial: true}),
+          schema: getModelSchemaRef(Habitacion, { partial: true }),
         },
       },
     })
@@ -113,7 +175,7 @@ export class HabitacionController {
         description: 'Habitacion model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Habitacion, {includeRelations: true}),
+            schema: getModelSchemaRef(Habitacion, { includeRelations: true }),
           },
         },
       },
@@ -138,7 +200,7 @@ export class HabitacionController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Habitacion, {partial: true}),
+          schema: getModelSchemaRef(Habitacion, { partial: true }),
         },
       },
     })

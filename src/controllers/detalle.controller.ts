@@ -4,6 +4,7 @@ import {
   Filter,
   repository,
   Where,
+  IsolationLevel,
 } from '@loopback/repository';
 import {
   post,
@@ -17,20 +18,20 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import {Detalle} from '../models';
-import {DetalleRepository} from '../repositories';
+import { Detalle } from '../models';
+import { DetalleRepository } from '../repositories';
 
 export class DetalleController {
   constructor(
     @repository(DetalleRepository)
-    public detalleRepository : DetalleRepository,
-  ) {}
+    public detalleRepository: DetalleRepository,
+  ) { }
 
   @post('/detalles', {
     responses: {
       '200': {
         description: 'Detalle model instance',
-        content: {'application/json': {schema: getModelSchemaRef(Detalle)}},
+        content: { 'application/json': { schema: getModelSchemaRef(Detalle) } },
       },
     },
   })
@@ -54,7 +55,7 @@ export class DetalleController {
     responses: {
       '200': {
         description: 'Detalle model count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -72,7 +73,7 @@ export class DetalleController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(Detalle, {includeRelations: true}),
+              items: getModelSchemaRef(Detalle, { includeRelations: true }),
             },
           },
         },
@@ -89,7 +90,7 @@ export class DetalleController {
     responses: {
       '200': {
         description: 'Detalle PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -97,7 +98,7 @@ export class DetalleController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Detalle, {partial: true}),
+          schema: getModelSchemaRef(Detalle, { partial: true }),
         },
       },
     })
@@ -113,7 +114,7 @@ export class DetalleController {
         description: 'Detalle model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Detalle, {includeRelations: true}),
+            schema: getModelSchemaRef(Detalle, { includeRelations: true }),
           },
         },
       },
@@ -132,7 +133,7 @@ export class DetalleController {
         description: 'Detalle model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Detalle, {includeRelations: true}),
+            schema: getModelSchemaRef(Detalle, { includeRelations: true }),
           },
         },
       },
@@ -157,7 +158,7 @@ export class DetalleController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Detalle, {partial: true}),
+          schema: getModelSchemaRef(Detalle, { partial: true }),
         },
       },
     })
@@ -187,7 +188,30 @@ export class DetalleController {
       },
     },
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
-    await this.detalleRepository.deleteById(id);
+  async deleteById(
+    @param.path.number('id') id: number,
+    @param.query.object('filter', getFilterSchemaFor(Detalle)) filter?: Filter<Detalle>
+  ): Promise<String> {
+    let res = "";
+    const tx = await this.detalleRepository.beginTransaction
+      (IsolationLevel.READ_COMMITTED);
+    try {
+      const detalle = await this.detalleRepository.findById(
+        id,
+        filter,
+        { transaction: tx }
+      );
+      if (detalle.inventariadodetalle === 0) {
+        await this.detalleRepository.deleteById(id, { transaction: tx });
+        await tx.commit();
+        res = "Registro eliminado exitosamente";
+      } else {
+        res = "Este registro ya forma parte del inventario.  ¡No es posible removerlo!"
+      }
+    } catch (error) {
+      await tx.rollback();
+      res = "Ocurrió un error"
+    }
+    return res;
   }
 }

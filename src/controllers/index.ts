@@ -14,3 +14,4 @@ export * from './viewmodulo.controller';
 export * from './viewhabitacion.controller';
 export * from './inventario.controller';
 export * from './viewinventario.controller';
+export * from './habitacioninventario.controller';

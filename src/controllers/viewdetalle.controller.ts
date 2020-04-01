@@ -37,9 +37,11 @@ export class ViewdetalleController {
   ): Promise<Viewdetalle[]> {
     return this.viewdetalleRepository.dataSource.execute('Select * from viewdetalle where idcompra=' + idcompra);
   }
+
+
+
   /********************************/
-  /********************************/
-  @get('/viewdetalles', {
+  @get('/viewdetallebystatus/{idcompra}', {
     responses: {
       '200': {
         description: 'Array of detalles de compra model instances',
@@ -55,9 +57,10 @@ export class ViewdetalleController {
     },
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async test1(
+  async buscar(
+    @param.path.number('idcompra') idcompra: number
   ): Promise<Viewdetalle[]> {
-    return this.viewdetalleRepository.dataSource.execute('Select * from viewdetalle');
+    return this.viewdetalleRepository.dataSource.execute('Select * from viewdetalle where inventariadodetalle = 0 and idcompra=' + idcompra);
   }
   /********************************/
 

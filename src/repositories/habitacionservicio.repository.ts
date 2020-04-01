@@ -1,16 +1,15 @@
-import {DefaultCrudRepository} from '@loopback/repository';
-import {Habitacionservicio, HabitacionservicioRelations} from '../models';
-import {MysqlDataSource} from '../datasources';
-import {inject} from '@loopback/core';
+import { DefaultTransactionalRepository, juggler } from '@loopback/repository';
+import { Habitacionservicio, HabitacionservicioRelations } from '../models';
+import { inject } from '@loopback/core';
 
-export class HabitacionservicioRepository extends DefaultCrudRepository<
+export class HabitacionservicioRepository extends DefaultTransactionalRepository<
   Habitacionservicio,
   typeof Habitacionservicio.prototype.idhabitacionservicio,
   HabitacionservicioRelations
-> {
+  > {
   constructor(
-    @inject('datasources.mysql') dataSource: MysqlDataSource,
+    @inject('datasources.mysql') protected db: juggler.DataSource,
   ) {
-    super(Habitacionservicio, dataSource);
+    super(Habitacionservicio, db);
   }
 }

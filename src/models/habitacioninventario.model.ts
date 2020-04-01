@@ -3,44 +3,39 @@ import { Entity, model, property } from '@loopback/repository';
 @model({
   settings: {
     mysql: {
-      table: 'inventario'
+      table: 'habitacioninventario'
     }
   }
 })
-export class Inventario extends Entity {
+
+export class Habitacioninventario extends Entity {
   @property({
     type: 'number',
     id: true,
     generated: true,
   })
-  idinventario?: number;
+  idhabitacioninventario?: number;
 
   @property({
     type: 'number',
     required: true,
   })
-  idhotel: number;
+  idhabitacion: number;
 
   @property({
     type: 'number',
     required: true,
   })
-  iddetalle: number;
-
-  @property({
-    type: 'number',
-    required: false,
-  })
-  estadoinventario: number;
+  idinventario: number;
 
 
-  constructor(data?: Partial<Inventario>) {
+  constructor(data?: Partial<Habitacioninventario>) {
     super(data);
   }
 }
 
-export interface InventarioRelations {
+export interface HabitacioninventarioRelations {
   // describe navigational properties here
 }
 
-export type InventarioWithRelations = Inventario & InventarioRelations;
+export type HabitacioninventarioWithRelations = Habitacioninventario & HabitacioninventarioRelations;

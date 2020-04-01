@@ -1,4 +1,4 @@
-import {Entity, model, property} from '@loopback/repository';
+import { Entity, model, property } from '@loopback/repository';
 
 @model({
   settings: {
@@ -26,7 +26,6 @@ export class Servicio extends Entity {
     required: true,
   })
   costoextraservicio: number;
-
 
   constructor(data?: Partial<Servicio>) {
     super(data);

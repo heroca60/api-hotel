@@ -62,9 +62,8 @@ export class InventarioController {
     try {
       i = 1;
       while (i < (cantidad + 1)) {
-        console.log(i)
-        console.log(await this.inventarioRepository.create(
-          inventario, { transaction: tx }));
+        await this.inventarioRepository.create(
+          inventario, { transaction: tx });
         i++;
       }
       //Se actualiza el detalle, se pasa de inventariadodetalle = 0 a 1
@@ -79,9 +78,6 @@ export class InventarioController {
     return res;
   }
 
-  async tran(inventario: Inventario, n: number) {
-
-  }
 
   @get('/inventarios/count', {
     responses: {

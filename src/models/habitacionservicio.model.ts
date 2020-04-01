@@ -1,4 +1,4 @@
-import {Entity, model, property} from '@loopback/repository';
+import { Entity, model, property } from '@loopback/repository';
 
 @model({
   settings: {
@@ -20,13 +20,13 @@ export class Habitacionservicio extends Entity {
     type: 'number',
     required: true,
   })
-  idhotel: number;
+  idhabitacion?: number;
 
   @property({
     type: 'number',
     required: true,
   })
-  idtipo: number;
+  idservicio: number;
 
 
   constructor(data?: Partial<Habitacionservicio>) {
