@@ -1,4 +1,4 @@
-import {Entity, model, property} from '@loopback/repository';
+import { Entity, model, property } from '@loopback/repository';
 
 @model()
 export class Viewinventario extends Entity {
@@ -39,6 +39,18 @@ export class Viewinventario extends Entity {
     required: true,
   })
   descripcionarticulo: string;
+
+  @property({
+    type: 'number',
+    required: true,
+  })
+  estadoinventario: number;
+
+  @property({
+    type: 'number',
+    required: true,
+  })
+  asignadoinventario: number;
 
 
   constructor(data?: Partial<Viewinventario>) {

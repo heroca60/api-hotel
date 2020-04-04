@@ -1,5 +1,6 @@
 import { Model, model, property } from '@loopback/repository';
-import { Servicio, Inventario } from '../models'
+import { Servicio } from './servicio.model';
+import { Inventario } from './inventario.model';
 
 @model()
 export class Objetohabitacion extends Model {

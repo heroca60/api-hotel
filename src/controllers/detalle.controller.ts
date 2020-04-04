@@ -193,8 +193,10 @@ export class DetalleController {
     @param.query.object('filter', getFilterSchemaFor(Detalle)) filter?: Filter<Detalle>
   ): Promise<String> {
     let res = "";
-    const tx = await this.detalleRepository.beginTransaction
-      (IsolationLevel.READ_COMMITTED);
+    const tx = await this.detalleRepository.beginTransaction({
+      isolationLevel: IsolationLevel.READ_COMMITTED,
+      timeout: 30000
+    });
     try {
       const detalle = await this.detalleRepository.findById(
         id,
@@ -207,6 +209,7 @@ export class DetalleController {
         res = "Registro eliminado exitosamente";
       } else {
         res = "Este registro ya forma parte del inventario.  ¡No es posible removerlo!"
+        await tx.rollback();
       }
     } catch (error) {
       await tx.rollback();

@@ -10,28 +10,26 @@ import {
   post,
   param,
   get,
-  getFilterSchemaFor,
   getModelSchemaRef,
-  getWhereSchemaFor,
   patch,
   put,
   del,
   requestBody,
 } from '@loopback/rest';
-import {Habitacioninventario} from '../models';
-import {HabitacioninventarioRepository} from '../repositories';
+import { Habitacioninventario } from '../models';
+import { HabitacioninventarioRepository } from '../repositories';
 
 export class HabitacioninventarioController {
   constructor(
     @repository(HabitacioninventarioRepository)
-    public habitacioninventarioRepository : HabitacioninventarioRepository,
-  ) {}
+    public habitacioninventarioRepository: HabitacioninventarioRepository,
+  ) { }
 
   @post('/habitacioninventarios', {
     responses: {
       '200': {
         description: 'Habitacioninventario model instance',
-        content: {'application/json': {schema: getModelSchemaRef(Habitacioninventario)}},
+        content: { 'application/json': { schema: getModelSchemaRef(Habitacioninventario) } },
       },
     },
   })
@@ -55,7 +53,7 @@ export class HabitacioninventarioController {
     responses: {
       '200': {
         description: 'Habitacioninventario model count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -73,7 +71,7 @@ export class HabitacioninventarioController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(Habitacioninventario, {includeRelations: true}),
+              items: getModelSchemaRef(Habitacioninventario, { includeRelations: true }),
             },
           },
         },
@@ -90,7 +88,7 @@ export class HabitacioninventarioController {
     responses: {
       '200': {
         description: 'Habitacioninventario PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -98,7 +96,7 @@ export class HabitacioninventarioController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Habitacioninventario, {partial: true}),
+          schema: getModelSchemaRef(Habitacioninventario, { partial: true }),
         },
       },
     })
@@ -114,7 +112,7 @@ export class HabitacioninventarioController {
         description: 'Habitacioninventario model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Habitacioninventario, {includeRelations: true}),
+            schema: getModelSchemaRef(Habitacioninventario, { includeRelations: true }),
           },
         },
       },
@@ -122,7 +120,7 @@ export class HabitacioninventarioController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Habitacioninventario, {exclude: 'where'}) filter?: FilterExcludingWhere<Habitacioninventario>
+    @param.filter(Habitacioninventario, { exclude: 'where' }) filter?: FilterExcludingWhere<Habitacioninventario>
   ): Promise<Habitacioninventario> {
     return this.habitacioninventarioRepository.findById(id, filter);
   }
@@ -139,7 +137,7 @@ export class HabitacioninventarioController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Habitacioninventario, {partial: true}),
+          schema: getModelSchemaRef(Habitacioninventario, { partial: true }),
         },
       },
     })

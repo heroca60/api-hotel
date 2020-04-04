@@ -85,19 +85,6 @@ export class HabitacionservicioController {
     return this.habitacionservicioRepository.find(filter);
   }
 
-  /********************************/
-  @get('/viewserviciohabitacion', {
-    responses: {
-      '200': {
-        description: 'test for executing query',
-      },
-    },
-  })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async test(): Promise<any[]> {
-    return this.habitacionservicioRepository.dataSource.execute('select count(idhotel) from habitacionservicio');
-  }
-  /********************************/
 
   @patch('/habitacionservicios', {
     responses: {

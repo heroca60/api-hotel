@@ -18,11 +18,12 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import { Habitacion, Servicio, Inventario, Objetohabitacion } from '../models';
+import { Habitacion, Objetohabitacion, Servicio, Inventario } from '../models';
 import {
   HabitacionRepository,
   HabitacionservicioRepository,
-  HabitacioninventarioRepository
+  HabitacioninventarioRepository,
+  InventarioRepository
 } from '../repositories';
 
 export class HabitacionController {
@@ -32,7 +33,9 @@ export class HabitacionController {
     @repository(HabitacionservicioRepository)
     public habitacionservicioRepository: HabitacionservicioRepository,
     @repository(HabitacioninventarioRepository)
-    public habitacioninventarioRepository: HabitacioninventarioRepository
+    public habitacioninventarioRepository: HabitacioninventarioRepository,
+    @repository(InventarioRepository)
+    public inventarioRepository: InventarioRepository
   ) { }
 
   @post('/habitaciones', {
@@ -74,7 +77,7 @@ export class HabitacionController {
           estadohabitacion: objetohabitacion.estadohabitacion
         },
         { transaction: tx });
-
+      //Asignando todos los servicios a la habitación
       for (i = 0; i < servicios.length; i++) {
         await this.habitacionservicioRepository.create(
           {
@@ -86,7 +89,7 @@ export class HabitacionController {
           }
         )
       }
-
+      //Asignando todos los inventarios a la habitación
       for (i = 0; i < inventarios.length; i++) {
         await this.habitacioninventarioRepository.create(
           {
@@ -96,7 +99,18 @@ export class HabitacionController {
           {
             transaction: tx
           }
-        )
+        );
+        //Actualizando el inventario, inventario asignado
+        //cambia su atributo 'asignadoinventario' de 0 a 1
+        await this.inventarioRepository.updateById(
+          inventarios[i].idinventario,
+          {
+            asignadoinventario: inventarios[i].asignadoinventario
+          },
+          {
+            transaction: tx
+          }
+        );
       }
       await tx.commit();
       res = true;
@@ -104,7 +118,6 @@ export class HabitacionController {
       await tx.rollback();
       res = false;
     }
-
     return res;
   }
 

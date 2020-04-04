@@ -26,8 +26,7 @@ export class Habitacionservicio extends Entity {
     type: 'number',
     required: true,
   })
-  idservicio: number;
-
+  idservicio?: number;
 
   constructor(data?: Partial<Habitacionservicio>) {
     super(data);

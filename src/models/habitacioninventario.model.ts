@@ -20,14 +20,13 @@ export class Habitacioninventario extends Entity {
     type: 'number',
     required: true,
   })
-  idhabitacion: number;
+  idhabitacion?: number;
 
   @property({
     type: 'number',
     required: true,
   })
-  idinventario: number;
-
+  idinventario?: number;
 
   constructor(data?: Partial<Habitacioninventario>) {
     super(data);

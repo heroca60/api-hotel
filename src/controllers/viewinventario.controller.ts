@@ -37,4 +37,30 @@ export class ViewinventarioController {
     return this.viewinventarioRepository.dataSource.execute('select * from viewinventario where idhotel=' + idhotel);
   }
   /********************************/
+
+  /********************************/
+  @get('/viewinventariosana/{idhotel}', {
+    responses: {
+      '200': {
+        description: 'Array of modulos model instances',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array',
+              items: getModelSchemaRef(Viewinventario, { includeRelations: true }),
+            },
+          },
+        },
+      },
+    },
+  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async test1(
+    @param.path.number('idhotel') idhotel: number
+  ): Promise<Viewinventario[]> {
+    return this.viewinventarioRepository.
+      dataSource.execute('select * from viewinventario where idhotel ='
+        + idhotel + ' and estadoinventario = 1 and asignadoinventario = 0');
+  }
+  /********************************/
 }

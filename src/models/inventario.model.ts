@@ -29,9 +29,15 @@ export class Inventario extends Entity {
 
   @property({
     type: 'number',
-    required: false,
+    required: true,
   })
   estadoinventario: number;
+
+  @property({
+    type: 'number',
+    required: true,
+  })
+  asignadoinventario: number;
 
 
   constructor(data?: Partial<Inventario>) {
